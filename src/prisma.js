@@ -107,8 +107,8 @@ const updatePostForUser = async (postId, data) => {
 // 		console.log(err.message);
 // 	});
 
-updatePostForUser('cjz048qsu00e308152xfnd3u4', {
-	published: true
-}).then(user => {
-	console.log(user);
-});
+// updatePostForUser('cjz048qsu00e308152xfnd3u4', {
+// 	published: true
+// }).then(user => {
+// 	console.log(user);
+// });
