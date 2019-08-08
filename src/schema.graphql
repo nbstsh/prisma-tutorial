@@ -60,7 +60,6 @@ input CreateCommentInput {
 	user: ID!
 	post: ID!
 	text: String!
-	createdAt: String!
 }
 
 input UpdateUserInput {

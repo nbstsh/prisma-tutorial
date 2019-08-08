@@ -61,30 +61,25 @@ const Mutation = {
 			info
 		);
 	},
-	createComment(parent, { data }, { db, pubsub }, info) {
-		const { dummyUsers, dummyPosts, dummyComments } = db;
-
-		const userExists = dummyUsers.some(user => user.id === data.user);
-		if (!userExists) throw new Error('User with given id was not found!');
-
-		const postExists = dummyPosts.some(post => post.id === data.post);
-		if (!postExists) throw new Error('Post with given id was not found!');
-
-		const comment = {
-			id: uuidv4(),
-			...data
-		};
-
-		pubsub.publish(`comment ${data.post}`, {
-			comment: {
-				mutation: MUTATION_TYPE.CREATED,
-				data: comment
-			}
-		});
-
-		dummyComments.push(comment);
-
-		return comment;
+	createComment(parent, { data }, { prisma }, info) {
+		return prisma.mutation.createComment(
+			{
+				data: {
+					text: data.text,
+					user: {
+						connect: {
+							id: data.user
+						}
+					},
+					post: {
+						connect: {
+							id: data.post
+						}
+					}
+				}
+			},
+			info
+		);
 	},
 	deleteComment(parent, { id }, { db, pubsub }, info) {
 		const { dummyComments, deleteComment } = db;
