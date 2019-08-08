@@ -2,21 +2,30 @@ import uuidv4 from 'uuid/v4';
 import { MUTATION_TYPE } from '../constants';
 
 const Mutation = {
-	createUser(parent, { data }, { db }, info) {
-		const { dummyUsers } = db;
-		const isEmailTaken = dummyUsers.some(user => user.email === data.email);
-		if (isEmailTaken) throw new Error('The email is already taken!');
+	async createUser(parent, { data }, { prisma }, info) {
+		const isEmailTaken = await prisma.exists.User({ email: data.email });
 
-		const user = {
-			id: uuidv4(),
-			...data,
-			posts: [],
-			comments: []
-		};
+		if (isEmailTaken) {
+			throw new Error('The email is already taken!');
+		}
 
-		dummyUsers.push(user);
+		return prisma.mutation.createUser({ data }, info);
+	},
+	deleteUser(parent, { id }, { db }, info) {
+		const { dummyUsers, deletePost, deleteComment } = db;
 
-		return user;
+		const index = dummyUsers.findIndex(user => user.id === id);
+		if (index === -1) throw new Error('User with given id not found!');
+
+		// delete user from the dummy array
+		const deletedUser = dummyUsers.splice(index, 1)[0];
+
+		const { posts, comments } = deletedUser;
+
+		posts.forEach(deletePost);
+		comments.forEach(deleteComment);
+
+		return deletedUser;
 	},
 	createPost(parent, { data }, { db, pubsub }, info) {
 		const { dummyUsers, dummyPosts } = db;
@@ -69,22 +78,6 @@ const Mutation = {
 		dummyComments.push(comment);
 
 		return comment;
-	},
-	deleteUser(parent, { id }, { db }, info) {
-		const { dummyUsers, deletePost, deleteComment } = db;
-
-		const index = dummyUsers.findIndex(user => user.id === id);
-		if (index === -1) throw new Error('User with given id not found!');
-
-		// delete user from the dummy array
-		const deletedUser = dummyUsers.splice(index, 1)[0];
-
-		const { posts, comments } = deletedUser;
-
-		posts.forEach(deletePost);
-		comments.forEach(deleteComment);
-
-		return deletedUser;
 	},
 	deletePost(parent, { id }, { db, pubsub }, info) {
 		const { dummyPosts, deletePost } = db;
