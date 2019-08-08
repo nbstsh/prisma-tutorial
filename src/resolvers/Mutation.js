@@ -3,18 +3,20 @@ import { MUTATION_TYPE } from '../constants';
 
 const Mutation = {
 	async createUser(parent, { data }, { prisma }, info) {
-		const isEmailTaken = await prisma.exists.User({ email: data.email });
-
-		if (isEmailTaken) {
-			throw new Error('The email is already taken!');
-		}
-
 		return prisma.mutation.createUser({ data }, info);
 	},
+	updateUser(parent, { id, data }, { prisma }, info) {
+		return prisma.mutation.updateUser(
+			{
+				where: {
+					id
+				},
+				data
+			},
+			info
+		);
+	},
 	async deleteUser(parent, { id }, { prisma }, info) {
-		const userExists = await prisma.exists.User({ id });
-		if (!userExists) throw new Error('User with given id was not found!');
-
 		return prisma.mutation.deleteUser(
 			{
 				where: { id }
@@ -22,6 +24,7 @@ const Mutation = {
 			info
 		);
 	},
+
 	createPost(parent, { data }, { db, pubsub }, info) {
 		const { dummyUsers, dummyPosts } = db;
 
@@ -105,23 +108,6 @@ const Mutation = {
 		});
 
 		return deleteComment(id);
-	},
-	updateUser(parent, { id, data }, { db }, info) {
-		const { dummyUsers } = db;
-
-		const user = dummyUsers.find(user => user.id === id);
-		if (!user) throw new Error('User with given id was not found!');
-
-		const { name, email, age } = data;
-		if (name) user.name = name;
-		if (age) user.age = age;
-		if (email) {
-			const isEmailTaken = dummyUsers.some(user => user.email === email);
-			if (isEmailTaken) throw new Error('The email is already taken.');
-			user.email = email;
-		}
-
-		return user;
 	},
 	updatePost(parent, { id, data }, { db, pubsub }, info) {
 		const { dummyPosts } = db;
