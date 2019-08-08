@@ -5,6 +5,7 @@ const prisma = new Prisma({
 	endpoint: 'http://localhost:4466/'
 });
 
+
 // prisma.query.users(null, '{ id name posts { id title } }').then(data => {
 // 	console.log(JSON.stringify(data, undefined, 2));
 // });
@@ -112,3 +113,6 @@ const updatePostForUser = async (postId, data) => {
 // }).then(user => {
 // 	console.log(user);
 // });
+
+
+export default prisma;

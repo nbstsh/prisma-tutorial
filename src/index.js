@@ -8,11 +8,12 @@ import Mutation from './resolvers/Mutation';
 import Subscription from './resolvers/Subscription';
 
 import * as db from './db';
+import prisma from './prisma';
 
 const pubsub = new PubSub();
 
 const server = new GraphQLServer({
-	typeDefs: './src/generated/prisma.graphql',
+	typeDefs: './src/schema.graphql',
 	resolvers: {
 		Query,
 		Post,
@@ -23,7 +24,8 @@ const server = new GraphQLServer({
 	},
 	context: {
 		db,
-		pubsub
+		pubsub,
+		prisma
 	}
 });
 
