@@ -1,18 +1,9 @@
 type Query {
-	users: [User!]!
+	users(query: String): [User!]!
 	posts: [Post!]!
 	post(id: ID!): Post
 	comments: [Comment!]!
 	comment(id: ID!): Comment
-}
-
-type Drink {
-	id: ID!
-	name: String!
-	price: Int!
-	size: String!
-	isStock: Boolean!
-	rating: Float!
 }
 
 type User {

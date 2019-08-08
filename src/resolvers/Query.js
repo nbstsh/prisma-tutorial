@@ -1,11 +1,14 @@
 const Query = {
-	users(parent, args, { db, prisma }, info) {
-		console.log(info);
-		console.log(prisma);
+	users(parent, { query }, { db, prisma }, info) {
+		const optionArgs = {};
 
-		return prisma.query.users(null, info);
+		if (query) {
+			optionArgs.where = {
+				OR: [{ name_contains: query }, { email_contains: query }]
+			};
+		}
 
-		// return db.dummyUsers;
+		return prisma.query.users(optionArgs, info);
 	},
 	posts(parent, args, { db }, info) {
 		return db.dummyPosts;
