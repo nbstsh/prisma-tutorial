@@ -11,21 +11,16 @@ const Mutation = {
 
 		return prisma.mutation.createUser({ data }, info);
 	},
-	deleteUser(parent, { id }, { db }, info) {
-		const { dummyUsers, deletePost, deleteComment } = db;
+	async deleteUser(parent, { id }, { prisma }, info) {
+		const userExists = await prisma.exists.User({ id });
+		if (!userExists) throw new Error('User with given id was not found!');
 
-		const index = dummyUsers.findIndex(user => user.id === id);
-		if (index === -1) throw new Error('User with given id not found!');
-
-		// delete user from the dummy array
-		const deletedUser = dummyUsers.splice(index, 1)[0];
-
-		const { posts, comments } = deletedUser;
-
-		posts.forEach(deletePost);
-		comments.forEach(deleteComment);
-
-		return deletedUser;
+		return prisma.mutation.deleteUser(
+			{
+				where: { id }
+			},
+			info
+		);
 	},
 	createPost(parent, { data }, { db, pubsub }, info) {
 		const { dummyUsers, dummyPosts } = db;
