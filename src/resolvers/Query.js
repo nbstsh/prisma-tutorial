@@ -1,5 +1,5 @@
 const Query = {
-	users(parent, { query }, { db, prisma }, info) {
+	users(parent, { query }, { prisma }, info) {
 		const optionArgs = {};
 
 		if (query) {
@@ -10,8 +10,16 @@ const Query = {
 
 		return prisma.query.users(optionArgs, info);
 	},
-	posts(parent, args, { db }, info) {
-		return db.dummyPosts;
+	posts(parent, { query }, { prisma }, info) {
+		const optionArgs = {};
+
+		if (query) {
+			optionArgs.where = {
+				OR: [{ title_contains: query }, { body_contains: query }]
+			};
+		}
+
+		return prisma.query.posts(optionArgs, info);
 	},
 	post(parent, args, { db }, info) {
 		return db.dummyPosts.find(post => post.id === args.id);
