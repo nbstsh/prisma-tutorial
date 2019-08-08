@@ -10,6 +10,16 @@ const Query = {
 
 		return prisma.query.users(optionArgs, info);
 	},
+	user(parent, args, { prisma }, info) {
+		return prisma.query.user(
+			{
+				where: {
+					id: args.id
+				}
+			},
+			info
+		);
+	},
 	posts(parent, { query }, { prisma }, info) {
 		const optionArgs = {};
 
@@ -21,14 +31,28 @@ const Query = {
 
 		return prisma.query.posts(optionArgs, info);
 	},
-	post(parent, args, { db }, info) {
-		return db.dummyPosts.find(post => post.id === args.id);
+	post(parent, args, { prisma }, info) {
+		return prisma.query.post(
+			{
+				where: {
+					id: args.id
+				}
+			},
+			info
+		);
 	},
 	comments(parent, args, { prisma }, info) {
 		return prisma.query.comments(null, info);
 	},
-	comment(parent, args, { db }, info) {
-		return db.dummyComments.find(comment => comment.id === args.id);
+	comment(parent, args, { prisma }, info) {
+		return prisma.query.comment(
+			{
+				where: {
+					id: args.id
+				}
+			},
+			info
+		);
 	}
 };
 
