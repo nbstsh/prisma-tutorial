@@ -24,33 +24,20 @@ const Mutation = {
 			info
 		);
 	},
-
-	createPost(parent, { data }, { db, pubsub }, info) {
-		const { dummyUsers, dummyPosts } = db;
-
-		const user = dummyUsers.find(user => user.id === data.author);
-		if (!user) throw new Error('User not exists!');
-
-		const post = {
-			id: uuidv4(),
-			...data,
-			comments: []
-		};
-
-		dummyPosts.push(post);
-
-		user.posts.push(data.author);
-
-		if (post.published) {
-			pubsub.publish('post', {
-				post: {
-					mutation: MUTATION_TYPE.CREATED,
-					data: post
+	createPost(parent, { data }, { prisma }, info) {
+		return prisma.mutation.createPost(
+			{
+				data: {
+					...data,
+					author: {
+						connect: {
+							id: data.author
+						}
+					}
 				}
-			});
-		}
-
-		return post;
+			},
+			info
+		);
 	},
 	createComment(parent, { data }, { db, pubsub }, info) {
 		const { dummyUsers, dummyPosts, dummyComments } = db;
