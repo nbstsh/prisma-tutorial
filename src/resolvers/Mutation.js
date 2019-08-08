@@ -39,6 +39,17 @@ const Mutation = {
 			info
 		);
 	},
+
+	deletePost(parent, { id }, { prisma }, info) {
+		return prisma.mutation.deletePost(
+			{
+				where: {
+					id
+				}
+			},
+			info
+		);
+	},
 	createComment(parent, { data }, { db, pubsub }, info) {
 		const { dummyUsers, dummyPosts, dummyComments } = db;
 
@@ -63,23 +74,6 @@ const Mutation = {
 		dummyComments.push(comment);
 
 		return comment;
-	},
-	deletePost(parent, { id }, { db, pubsub }, info) {
-		const { dummyPosts, deletePost } = db;
-
-		const post = dummyPosts.find(post => post.id === id);
-		if (!post) throw new Error('Post with given Id was not found!');
-
-		if (post.published) {
-			pubsub.publish('post', {
-				post: {
-					mutation: MUTATION_TYPE.DELETED,
-					data: post
-				}
-			});
-		}
-
-		return deletePost(id);
 	},
 	deleteComment(parent, { id }, { db, pubsub }, info) {
 		const { dummyComments, deleteComment } = db;
