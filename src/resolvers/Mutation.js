@@ -81,20 +81,15 @@ const Mutation = {
 			info
 		);
 	},
-	deleteComment(parent, { id }, { db, pubsub }, info) {
-		const { dummyComments, deleteComment } = db;
-
-		const comment = dummyComments.find(comment => comment.id === id);
-		if (!comment) throw new Error('Comment with given id was not found!');
-
-		pubsub.publish(`comment ${comment.post}`, {
-			comment: {
-				mutation: MUTATION_TYPE.DELETED,
-				data: comment
-			}
-		});
-
-		return deleteComment(id);
+	deleteComment(parent, { id }, { prisma }, info) {
+		return prisma.mutation.deleteComment(
+			{
+				where: {
+					id
+				}
+			},
+			info
+		);
 	},
 	updateComment(parent, { id, data }, { prisma }, info) {
 		return prisma.mutation.updateComment(
