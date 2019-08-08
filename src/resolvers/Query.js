@@ -24,8 +24,8 @@ const Query = {
 	post(parent, args, { db }, info) {
 		return db.dummyPosts.find(post => post.id === args.id);
 	},
-	comments(parent, args, { db }, info) {
-		return db.dummyComments;
+	comments(parent, args, { prisma }, info) {
+		return prisma.query.comments(null, info);
 	},
 	comment(parent, args, { db }, info) {
 		return db.dummyComments.find(comment => comment.id === args.id);
