@@ -1,3 +1,4 @@
+import './config';
 import { GraphQLServer, PubSub } from 'graphql-yoga';
 
 import Query from './resolvers/Query';
