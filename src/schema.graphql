@@ -78,17 +78,16 @@ input UpdateCommentInput {
 }
 
 type Subscription {
-	count: Int!
 	comment(postId: ID!): CommentSubscriptionPayload!
 	post: PostSubscriptionPayload!
 }
 
 type CommentSubscriptionPayload {
 	mutation: String!
-	data: Comment!
+	node: Comment
 }
 
 type PostSubscriptionPayload {
 	mutation: String!
-	data: Post!
+	node: Post
 }
