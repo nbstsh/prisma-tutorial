@@ -11,6 +11,7 @@ type User {
 	id: ID!
 	name: String!
 	email: String!
+	password: String!
 	posts: [Post!]!
 	comments: [Comment!]!
 }
@@ -47,6 +48,7 @@ type Mutation {
 input CreateUserInput {
 	name: String!
 	email: String!
+	password: String!
 }
 
 input CreatePostInput {
