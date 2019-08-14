@@ -35,6 +35,7 @@ type Comment {
 
 type Mutation {
 	createUser(data: CreateUserInput!): AuthPayload!
+	login(data: LoginUserInput!): AuthPayload!
 	createPost(data: CreatePostInput!): Post!
 	createComment(data: CreateCommentInput!): Comment!
 	deleteUser(id: ID!): User!
@@ -47,6 +48,11 @@ type Mutation {
 
 input CreateUserInput {
 	name: String!
+	email: String!
+	password: String!
+}
+
+input LoginUserInput {
 	email: String!
 	password: String!
 }
