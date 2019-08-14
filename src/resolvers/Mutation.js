@@ -80,7 +80,17 @@ const Mutation = {
 			info
 		);
 	},
-	deletePost(parent, { id }, { prisma }, info) {
+	async deletePost(parent, { id }, { prisma, request }, info) {
+		const userId = getUserId(request);
+
+		const postExists = await prisma.exists.Post({
+			id,
+			author: {
+				id: userId
+			}
+		});
+		if (!postExists) throw new Error('Unable to delete post!');
+
 		return prisma.mutation.deletePost(
 			{
 				where: {
