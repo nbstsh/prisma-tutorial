@@ -40,11 +40,13 @@ const Mutation = {
 			token: jwt.sign({ userId: user.id }, process.env.JWT_PRIVATEKEY)
 		};
 	},
-	updateUser(parent, { id, data }, { prisma }, info) {
+	updateUser(parent, { data }, { prisma, request }, info) {
+		const userId = getUserId(request);
+
 		return prisma.mutation.updateUser(
 			{
 				where: {
-					id
+					id: userId
 				},
 				data
 			},
