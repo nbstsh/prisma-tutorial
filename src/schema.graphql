@@ -38,7 +38,7 @@ type Mutation {
 	login(data: LoginUserInput!): AuthPayload!
 	createPost(data: CreatePostInput!): Post!
 	createComment(data: CreateCommentInput!): Comment!
-	deleteUser(id: ID!): User!
+	deleteUser: User!
 	deletePost(id: ID!): Post!
 	deleteComment(id: ID!): Comment!
 	updateUser(data: UpdateUserInput!): User!

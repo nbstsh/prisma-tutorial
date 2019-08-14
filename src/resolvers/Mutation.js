@@ -53,10 +53,12 @@ const Mutation = {
 			info
 		);
 	},
-	async deleteUser(parent, { id }, { prisma }, info) {
+	async deleteUser(parent, args, { prisma, request }, info) {
+		const userId = getUserId(request);
+
 		return prisma.mutation.deleteUser(
 			{
-				where: { id }
+				where: { id: userId }
 			},
 			info
 		);
