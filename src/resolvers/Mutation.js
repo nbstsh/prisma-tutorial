@@ -101,7 +101,17 @@ const Mutation = {
 		);
 	},
 
-	updatePost(parent, { id, data }, { prisma }, info) {
+	async updatePost(parent, { id, data }, { prisma, request }, info) {
+		const userId = getUserId(request);
+
+		const postExists = await prisma.exists.Post({
+			id,
+			author: {
+				id: userId
+			}
+		});
+		if (!postExists) throw new Error('Unable to update!');
+
 		return prisma.mutation.updatePost(
 			{
 				where: {
@@ -112,14 +122,16 @@ const Mutation = {
 			info
 		);
 	},
-	createComment(parent, { data }, { prisma }, info) {
+	createComment(parent, { data }, { prisma, request }, info) {
+		const userId = getUserId(request);
+
 		return prisma.mutation.createComment(
 			{
 				data: {
 					text: data.text,
 					user: {
 						connect: {
-							id: data.user
+							id: userId
 						}
 					},
 					post: {
@@ -142,7 +154,17 @@ const Mutation = {
 			info
 		);
 	},
-	updateComment(parent, { id, data }, { prisma }, info) {
+	async updateComment(parent, { id, data }, { prisma, request }, info) {
+		const userId = getUserId(request);
+
+		const commentExists = await prisma.exists.Comment({
+			id,
+			user: {
+				id: userId
+			}
+		});
+		if (!commentExists) throw new Error('Unable to update!');
+
 		return prisma.mutation.updateComment(
 			{
 				where: {

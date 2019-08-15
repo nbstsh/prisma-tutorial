@@ -69,7 +69,6 @@ input CreatePostInput {
 }
 
 input CreateCommentInput {
-	user: ID!
 	post: ID!
 	text: String!
 }
