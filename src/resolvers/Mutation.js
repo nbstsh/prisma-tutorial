@@ -100,7 +100,6 @@ const Mutation = {
 			info
 		);
 	},
-
 	async updatePost(parent, { id, data }, { prisma, request }, info) {
 		const userId = getUserId(request);
 
@@ -144,7 +143,17 @@ const Mutation = {
 			info
 		);
 	},
-	deleteComment(parent, { id }, { prisma }, info) {
+	async deleteComment(parent, { id }, { prisma, request }, info) {
+		const userId = getUserId(request);
+
+		const commentExists = await prisma.exists.Comment({
+			id: id,
+			user: {
+				id: userId
+			}
+		});
+		if (!commentExists) throw new Error('Unable to delete comment!');
+
 		return prisma.mutation.deleteComment(
 			{
 				where: {
